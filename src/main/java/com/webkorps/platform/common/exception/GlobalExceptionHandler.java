@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException ex) {
 
         ApiError error = new ApiError(
-                Httpgit Status.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.value(),
                 "Not Found",
                 ex.getMessage()
         );
