@@ -8,18 +8,25 @@ public record RegistrationRequest(
 
 
         @NotBlank(message = "Full name is required")
-        @Size(max = 100, message = "Name cannot exceed 100 characters")
+        @Size(max = 100)
         String fullName,
 
         @NotBlank(message = "Email is required")
-        @Email(message = "Please provide a valid email")
-        @Size(max = 150, message = "Email cannot exceed 150 characters")
+        @Email(message = "Invalid email format")
+        @Size(max = 150)
         String email,
 
-        @NotBlank(message = "Password is required")
-        @Size(min = 8, max = 72, message = "Password must be between 8 and 72 characters")
-        String password
+        @NotBlank(message = "Employee code is required")
+        @Size(max = 50)
+        String employeeCode,
 
+        @NotBlank(message = "Department is required")
+        @Size(max = 100)
+        String department,
+
+        @NotBlank(message = "Password is required")
+        @Size(min = 8, max = 72)
+        String password
 
 ) {
 }
