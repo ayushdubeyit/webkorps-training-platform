@@ -1,0 +1,185 @@
+/* Temporary showcase-only experiment. Remove auth-showcase--light to restore the navy treatment. */
+.auth-showcase.auth-showcase--light {
+  color: #0d3554;
+  background-color: #fff;
+  background-image:
+    radial-gradient(ellipse at 4% 3%, rgb(83 165 214 / 7%), transparent 34%),
+    radial-gradient(ellipse at 92% 26%, rgb(26 135 200 / 5%), transparent 37%),
+    linear-gradient(145deg, #fff 0%, #fff 62%, #f8fbfe 100%);
+}
+
+.auth-showcase.auth-showcase--light::before {
+  background-image: linear-gradient(rgb(26 135 200 / 3.2%) 1px, transparent 1px), linear-gradient(90deg, rgb(26 135 200 / 3.2%) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, rgb(13 53 84 / 22%), transparent 76%);
+}
+
+.auth-showcase--light .auth-showcase__glow {
+  border-color: rgb(26 135 200 / 13%);
+}
+
+.auth-showcase--light .auth-showcase__glow::before,
+.auth-showcase--light .auth-showcase__glow::after {
+  border-color: rgb(26 135 200 / 11%);
+}
+
+.auth-showcase--light .auth-showcase__scroll {
+  scrollbar-color: rgb(26 135 200 / 36%) transparent;
+}
+
+.auth-showcase--light .auth-showcase__brand img {
+  width: 164px;
+  border-radius: 4px;
+}
+
+.auth-showcase--light .auth-showcase__brand span {
+  border-color: rgb(13 53 84 / 19%);
+  color: #11608f;
+}
+
+.auth-showcase--light .auth-eyebrow {
+  color: #11608f;
+}
+
+.auth-showcase--light .auth-hero .auth-eyebrow span {
+  background: #1a87c8;
+}
+
+.auth-showcase--light .auth-hero h2,
+.auth-showcase--light .auth-section__heading h3,
+.auth-showcase--light .auth-closing h3 {
+  color: #0d3554;
+}
+
+.auth-showcase--light .auth-hero h2 span {
+  color: #1a87c8;
+}
+
+.auth-showcase--light .auth-hero__copy,
+.auth-showcase--light .auth-section__heading > p:last-child,
+.auth-showcase--light .auth-closing > p:last-child {
+  color: #52677c;
+}
+
+.auth-showcase--light .auth-hero__chips span {
+  border-color: rgb(26 135 200 / 23%);
+  color: #52677c;
+  background: rgb(255 255 255 / 74%);
+  box-shadow: 0 4px 14px rgb(13 53 84 / 4%);
+}
+
+.auth-showcase--light .auth-showcase__expand {
+  border-color: rgb(13 53 84 / 14%);
+  color: #174b70;
+}
+
+.auth-showcase--light .auth-showcase__expand span {
+  color: #1a87c8;
+}
+
+.auth-showcase--light .auth-section,
+.auth-showcase--light .auth-closing {
+  border-color: rgb(13 53 84 / 12%);
+}
+
+.auth-showcase--light .auth-stat {
+  border-color: #d9eaf4;
+  background: #eaf4fb;
+  box-shadow: 0 10px 24px rgb(13 53 84 / 5%);
+}
+
+.auth-showcase--light .auth-stat__number {
+  color: #0d3554;
+}
+
+.auth-showcase--light .auth-stat__label {
+  color: #52677c;
+}
+
+.auth-showcase--light .auth-expertise-card {
+  border-color: #dceaf3;
+  background: #fff;
+  box-shadow: 0 8px 20px rgb(13 53 84 / 5%);
+}
+
+.auth-showcase--light .auth-expertise-card > span {
+  color: #1a87c8;
+  background: #e9f5fb;
+}
+
+.auth-showcase--light .auth-expertise-card h4,
+.auth-showcase--light .auth-story h4 {
+  color: #0d3554;
+}
+
+.auth-showcase--light .auth-expertise-card p {
+  color: #52677c;
+}
+
+.auth-showcase--light .auth-industry {
+  border-color: #dceaf3;
+  color: #1a87c8;
+  background: #f6fbfe;
+  box-shadow: 0 6px 17px rgb(13 53 84 / 3%);
+}
+
+.auth-showcase--light .auth-industry svg {
+  color: #1a87c8;
+}
+
+.auth-showcase--light .auth-industry span {
+  color: #52677c;
+}
+
+.auth-showcase--light .auth-story {
+  border-color: #dce8f0;
+  background: white;
+  box-shadow: 0 10px 25px rgb(13 53 84 / 5%);
+}
+
+.auth-showcase--light .auth-story:hover,
+.auth-showcase--light .auth-story:focus-visible {
+  border-color: #87c6e7;
+  background: #fff;
+  box-shadow: 0 15px 30px rgb(13 53 84 / 10%);
+}
+
+.auth-showcase--light .auth-story__body p {
+  color: #11608f;
+}
+
+.auth-showcase--light .auth-story__body > span {
+  color: #52677c;
+}
+
+.auth-showcase--light .auth-story__image::after {
+  background: none;
+}
+
+.auth-showcase--light .auth-story__image {
+  background: linear-gradient(135deg, #edf7fc, #d9edf8);
+}
+
+.auth-showcase--light .auth-story__image > span {
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: #11608f;
+  background: #fff;
+}
+
+.auth-showcase--light .auth-showcase__source {
+  color: #52677c;
+}
+
+.auth-showcase--light .auth-showcase__source a {
+  color: #11608f;
+}
+
+@media (max-width: 760px) {
+  .auth-showcase--light .auth-showcase__brand img {
+    width: 138px;
+  }
+
+  .auth-showcase--light .auth-showcase__expand {
+    border-top-color: rgb(13 53 84 / 14%);
+  }
+}

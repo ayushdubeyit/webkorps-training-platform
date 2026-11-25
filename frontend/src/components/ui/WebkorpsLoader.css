@@ -1,0 +1,40 @@
+.webkorps-loader {
+  position: relative;
+  display: inline-block;
+  width: var(--webkorps-loader-size);
+  aspect-ratio: 130 / 122;
+  flex: none;
+}
+
+.webkorps-loader__symbol {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  clip-path: circle(36.5% at 53.85% 50.8%);
+}
+
+.webkorps-loader__ring {
+  position: absolute;
+  top: 50.8%;
+  left: 53.85%;
+  width: 86.2%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: var(--webkorps-loader-stroke) solid var(--brand-primary);
+  border-radius: 50%;
+  animation: webkorps-loader-spin 1.5s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes webkorps-loader-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .webkorps-loader__ring {
+    animation: none;
+  }
+}
