@@ -7,9 +7,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -33,8 +37,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                         new SimpleGrantedAuthority(
                                 "ROLE_" + user.getRole().name()
                         )
-                )).disabled(user.getAccountStatus() !=
-                        com.webkorps.platform.identity.entity.enums.AccountStatus.APPROVED)
+                ))
+//                        )).disabled(user.getAccountStatus() !=
+//                        com.webkorps.platform.identity.entity.enums.AccountStatus.APPROVED)
                 .build();
 
 

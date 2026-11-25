@@ -53,21 +53,36 @@ public class JwtService {
                 .getSubject();
     }
 
+
     public boolean isTokenValid(String token, User user) {
         try {
             String email = extractEmail(token);
 
-            return email.equals(user.getEmail())
-                    && Jwts.parser()
+            boolean emailMatches = email.equals(user.getEmail());
+
+            Date expiry = Jwts.parser()
                     .verifyWith(signingKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload()
-                    .getExpiration()
-                    .after(new Date());
+                    .getExpiration();
+
+            boolean notExpired = expiry.after(new Date());
+
+            System.out.println("JWT email matches: " + emailMatches);
+            System.out.println("JWT not expired: " + notExpired);
+            System.out.println("JWT user status: " + user.getAccountStatus());
+            System.out.println("JWT user role: " + user.getRole());
+
+            return emailMatches && notExpired;
 
         } catch (Exception ex) {
+            System.err.println("JWT validation failed: "
+                    + ex.getClass().getSimpleName()
+                    + " - " + ex.getMessage());
+
             return false;
         }
     }
+
 }
