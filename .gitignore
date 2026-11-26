@@ -46,3 +46,5 @@ Thumbs.db
 
 # Logs
 *.log
+# Local application configuration (contains secrets)
+backend/src/main/resources/application.properties
