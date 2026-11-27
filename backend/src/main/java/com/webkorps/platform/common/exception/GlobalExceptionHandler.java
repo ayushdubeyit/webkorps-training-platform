@@ -34,4 +34,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    @ExceptionHandler(DomainNameAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleDomainNameAlreadyExists(
+            DomainNameAlreadyExistsException ex) {
+        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InvalidTrainingDomainException.class)
+    public ResponseEntity<ApiError> handleInvalidTrainingDomain(
+            InvalidTrainingDomainException ex) {
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }
+
 }
