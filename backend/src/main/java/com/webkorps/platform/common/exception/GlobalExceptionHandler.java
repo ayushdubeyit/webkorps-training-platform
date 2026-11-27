@@ -48,4 +48,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler(InvalidTaskException.class)
+    public ResponseEntity<ApiError> handleInvalidTask(InvalidTaskException ex) {
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }
+
 }

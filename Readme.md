@@ -136,7 +136,8 @@ src/main/resources/
     └── migration/
         ├── V1__create_users_and_employee_profiles.sql
         ├── V2__create_training_domains.sql
-        └── V3__create_training_modules.sql
+        ├── V3__align_training_domain_active_type.sql
+        └── V4__create_tasks_and_assignments.sql
 ```
 
 Hibernate is configured with:
@@ -346,6 +347,39 @@ Content-Type: application/json
 Update example: `PATCH /api/v1/manager/domains/1` with `{"description":"Java fundamentals"}`. To rename, send `{"name":"Java Advanced"}`. Deactivation returns the updated domain response with `active: false`.
 
 Errors: `400` for missing/blank/oversized required values or an empty update; `401` when unauthenticated; `403` when an employee uses a manager endpoint; `404` when the domain ID does not exist; `409` when the name duplicates an existing domain (case-insensitive). Names are trimmed on create/update. Description is nullable and trimmed when provided.
+
+## Independent Task Management API
+
+All endpoints require a bearer token from an approved account. Manager operations use the existing `/api/v1/manager/**` role rule. Employees can only access task assignments belonging to their authenticated account; requests for another employee's task return `404`.
+
+| Method and endpoint | Access | Behavior |
+|---|---|---|
+| `GET /api/v1/tasks` | Approved employee | Lists the caller's active assignments. Supports `page`, `size`, `status`, `priority`, and `search`. |
+| `GET /api/v1/tasks/{id}` | Approved employee or manager | Employee must be assigned; manager can view all active assignees. |
+| `PATCH /api/v1/tasks/{id}/status` | Assigned employee | Changes that employee's assignment status. |
+| `POST /api/v1/tasks/{id}/remarks` | Assigned employee | Adds a remark to that employee's assignment. |
+| `GET /api/v1/manager/tasks` | Manager | Lists all tasks; filters by `employeeId`, `status`, `priority`, and `search`. Supports `page` and `size`. |
+| `POST /api/v1/manager/tasks` | Manager | Creates a task. |
+| `PATCH /api/v1/manager/tasks/{id}` | Manager | Updates task title, description, priority, or due date. |
+| `POST /api/v1/manager/tasks/{id}/assign` | Manager | Replaces the active assignee set with approved employees. Removed assignments are deactivated so their remark history remains stored. |
+
+Page numbers are zero-based; `size` defaults to 20 and must be between 1 and 100. Search matches title and description case-insensitively. Assignment statuses are `TODO`, `IN_PROGRESS`, `COMPLETED`, and `CANCELLED`; priorities are `LOW`, `MEDIUM`, `HIGH`, and `URGENT`.
+
+Create a task with `POST /api/v1/manager/tasks`:
+
+```json
+{"title":"Safety review","description":"Review site safety guidance","priority":"HIGH","dueDate":"2027-01-20"}
+```
+
+Assign or replace assignees with `POST /api/v1/manager/tasks/1/assign`:
+
+```json
+{"employeeIds":[12,18]}
+```
+
+Employees change their own status with `PATCH /api/v1/tasks/1/status` and `{"status":"IN_PROGRESS"}`, and add remarks with `POST /api/v1/tasks/1/remarks` and `{"remark":"Started the review"}`. Manager responses include active assignees and their remarks; employee responses include only their own assignment and remarks.
+
+Migration V4 adds `tasks`, `task_assignments`, and `task_remarks`. Integration tests use the dedicated `webkorps_training_test` schema configured by `application-training-domain-test.properties`; set `WTP_TEST_DB_USERNAME` and `WTP_TEST_DB_PASSWORD` before running those tests.
 
 ## Project Status
 
