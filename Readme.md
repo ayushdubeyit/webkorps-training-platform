@@ -136,7 +136,8 @@ src/main/resources/
     └── migration/
         ├── V1__create_users_and_employee_profiles.sql
         ├── V2__create_training_domains.sql
-        └── V3__create_training_modules.sql
+        ├── V3__align_training_domain_active_type.sql
+        └── V4__create_training_modules_and_files.sql
 ```
 
 Hibernate is configured with:
@@ -346,6 +347,58 @@ Content-Type: application/json
 Update example: `PATCH /api/v1/manager/domains/1` with `{"description":"Java fundamentals"}`. To rename, send `{"name":"Java Advanced"}`. Deactivation returns the updated domain response with `active: false`.
 
 Errors: `400` for missing/blank/oversized required values or an empty update; `401` when unauthenticated; `403` when an employee uses a manager endpoint; `404` when the domain ID does not exist; `409` when the name duplicates an existing domain (case-insensitive). Names are trimmed on create/update. Description is nullable and trimmed when provided.
+
+### Training Module and PDF Library API
+
+All endpoints use the `/api/v1` prefix and require a bearer token. The existing JWT filter only authenticates approved accounts. Module list results include published modules only and use Spring's paginated response shape. `page` is zero-based; `size` defaults to 20 and must be between 1 and 100. `domainId` and `search` are optional filters; search matches module titles case-insensitively.
+
+| Method and endpoint | Access | Behavior |
+|---|---|---|
+| `GET /api/v1/modules` | Approved manager or employee | Browse published modules; supports `page`, `size`, `domainId`, and `search`. |
+| `GET /api/v1/modules/{id}` | Approved manager or employee | Employees see published modules; managers can inspect any status. |
+| `POST /api/v1/manager/modules` | Manager | Creates a DRAFT module. |
+| `PATCH /api/v1/manager/modules/{id}` | Manager | Partially updates `domainId`, `title`, and/or `description`. |
+| `PATCH /api/v1/manager/modules/{id}/publish` | Manager | Publishes a draft; sets `publishedAt`. Repeated publish calls are idempotent. |
+| `PATCH /api/v1/manager/modules/{id}/archive` | Manager | Archives a module; repeated archive calls are idempotent. |
+| `POST /api/v1/manager/modules/{id}/files` | Manager | Uploads a PDF version as multipart form data. Archived modules cannot receive uploads. |
+| `GET /api/v1/modules/{id}/download` | Approved manager or employee | Streams the newest uploaded PDF as an attachment. Employees can download only published modules; managers can download files from any module status. |
+
+Create example:
+
+```http
+POST /api/v1/manager/modules
+Authorization: Bearer <manager-jwt>
+Content-Type: application/json
+
+{"domainId": 1, "title": "Java Fundamentals", "description": "Core language concepts"}
+```
+
+Upload example (Postman: Body → form-data; set `file` to File and `versionNote` to Text):
+
+```http
+POST /api/v1/manager/modules/1/files
+Authorization: Bearer <manager-jwt>
+Content-Type: multipart/form-data
+
+file: <Java-Fundamentals.pdf>
+versionNote: Initial release
+```
+
+Downloads return `Content-Type: application/pdf` and an attachment filename. The API does not return storage paths or permanent file URLs. Re-uploading identical PDF bytes to the same module returns `409`; distinct uploads create revisions, and the module-level download endpoint serves the newest one.
+
+Errors use the existing `{ "status": 400, "error": "Bad Request", "message": "..." }` shape: `400` for invalid metadata or invalid PDF content, `401` for unauthenticated or non-approved accounts, `403` for employee access to manager operations, `404` for missing IDs or employee requests for non-published modules/files, `409` for duplicate PDF content, and `413` for files exceeding the configured limit.
+
+#### Local PDF storage configuration
+
+Uploaded bytes are stored outside the classpath static/public directories. The default location is `./data/training-files`, relative to the backend process working directory; the directory is created at startup. MySQL stores file metadata and a generated UUID storage key, not PDF bytes. Configure the local storage and limits with:
+
+```text
+WTP_FILE_STORAGE_PATH=./data/training-files
+WTP_MAX_PDF_SIZE=10MB
+WTP_MAX_PDF_REQUEST_SIZE=11MB
+```
+
+If you raise `WTP_MAX_PDF_SIZE`, also set `WTP_MAX_PDF_REQUEST_SIZE` high enough to include multipart overhead. Keep the storage directory private and backed up with the database metadata.
 
 ## Project Status
 
