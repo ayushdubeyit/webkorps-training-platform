@@ -311,6 +311,42 @@ The detailed product and engineering specifications cover:
 - DevOps and deployment.
 - Development roadmap.
 
+### Training Domain API
+
+All endpoints use the `/api/v1` prefix and JSON. Successful domain responses contain `id`, `name`, `description`, `active`, `createdAt`, and `updatedAt`. Error responses use `{ "status": 400, "error": "Bad Request", "message": "..." }`.
+
+| Method and endpoint | Access | Behavior |
+|---|---|---|
+| `GET /api/v1/domains` | Authenticated, approved manager or employee | Lists active domains only. |
+| `POST /api/v1/manager/domains` | Manager | Creates an active domain; returns `201 Created`. |
+| `PATCH /api/v1/manager/domains/{id}` | Manager | Updates supplied `name` and/or `description`; omitted fields are unchanged. |
+| `PATCH /api/v1/manager/domains/{id}/deactivate` | Manager | Deactivates the domain without deleting it; repeated requests are successful and idempotent. |
+
+Create example:
+
+```http
+POST /api/v1/manager/domains
+Authorization: Bearer <manager-jwt>
+Content-Type: application/json
+
+{ "name": "  Java  ", "description": "Core Java training" }
+```
+
+```json
+{
+  "id": 1,
+  "name": "Java",
+  "description": "Core Java training",
+  "active": true,
+  "createdAt": "2026-11-27T10:30:00",
+  "updatedAt": "2026-11-27T10:30:00"
+}
+```
+
+Update example: `PATCH /api/v1/manager/domains/1` with `{"description":"Java fundamentals"}`. To rename, send `{"name":"Java Advanced"}`. Deactivation returns the updated domain response with `active: false`.
+
+Errors: `400` for missing/blank/oversized required values or an empty update; `401` when unauthenticated; `403` when an employee uses a manager endpoint; `404` when the domain ID does not exist; `409` when the name duplicates an existing domain (case-insensitive). Names are trimmed on create/update. Description is nullable and trimmed when provided.
+
 ## Project Status
 
 **Currently under active development.**
